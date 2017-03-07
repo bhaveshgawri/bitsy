@@ -24,15 +24,18 @@ class topic_qs:
 		self.user_passw = passw
 		self.scrolls = scrolls
 		self.save_after = save_after
+		
 		# installation tip!
 		# https://chromedriver.storage.googleapis.com/index.html?path=2.27/
 		# download from ^, copy it to /usr/bin/ and give it executable permissions(a+x)
 		chromedriver = "/usr/bin/chromedriver"
 		os.environ["webdriver.chrome.driver"] = chromedriver
 		self.driver = webdriver.Chrome(chromedriver)
-
+		'''
+		#https://bbuseruploads.s3.amazonaws.com/fd96ed93-2b32-46a7-9d2b-ecbc0988516a/downloads/396e7977-71fd-4592-8723-495ca4cfa7cc/phantomjs-2.1.1-linux-x86_64.tar.bz2?Signature=JRuhEe3%2Bn4Hm8QgXoWq0vuuDDYo%3D&Expires=1488867854&AWSAccessKeyId=AKIAIVFPT2YJYYZY3H4A&versionId=null&response-content-disposition=attachment%3B%20filename%3D%22phantomjs-2.1.1-linux-x86_64.tar.bz2%22
+		self.driver = webdriver.PhantomJS()
+		'''
 		self.driver.get(self.topic_link)
-
 		"""
 		usage format
 		driver.find_elements_by_xpath('//a[starts-with(@class,"more_link")]')
@@ -77,13 +80,13 @@ class topic_qs:
 
 		self.counter=0
 		self.questions_extrated=0
-		
+		self.completed_list=[]
 		try:
 			with open (self.filename,"r") as f:
-				self.completed_list=f.read()
+				self.completed_list=f.readlines()
 		except:
 			self.completed_list=[]
-		print self.completed_list
+		
 		for i in range(0,self.scrolls):
 			self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 			
@@ -106,7 +109,7 @@ class topic_qs:
 				#writing to a file if it is not already there
 				with open (self.filename,"a") as f:
 					for a_link in self.question_links:
-						if a_link.get_attribute('href') not in self.completed_list:
+						if a_link.get_attribute('href')+'\n' not in self.completed_list:
 							f.write(a_link.get_attribute('href')+'\n')
 							self.questions_extrated = self.questions_extrated+1
 							self.completed_list.append(a_link.get_attribute('href'))
@@ -117,4 +120,5 @@ class topic_qs:
 		self.driver.close()
 
 t = topic_qs()
-t.login_and_scrape('url','email','passw',scrolls, save_after_scrolls)
+t.login_and_scrape("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 50, 10)
+#t.login_and_scrape('url','email','passw',scrolls, save_after_scrolls)
