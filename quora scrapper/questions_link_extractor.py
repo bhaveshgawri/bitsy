@@ -2,9 +2,10 @@ import os, time
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from page_login import login
 
 class topic_qs:
-	def login_and_scrape(self,link, mail, passw, scrolls=100, save_after=10):
+	def scrape_qs(self, link, mail, passw, scrolls=100, save_after=10):
 		"""
 		Arguments:
 			example link: "https://www.quora.com/topic/BITS-Pilani-Hyderabad-Campus/all_questions"
@@ -25,17 +26,6 @@ class topic_qs:
 		self.scrolls = scrolls
 		self.save_after = save_after
 		
-		# installation tip!
-		# https://chromedriver.storage.googleapis.com/index.html?path=2.27/
-		# download from ^, copy it to /usr/bin/ and give it executable permissions(a+x)
-		chromedriver = "/usr/bin/chromedriver"
-		os.environ["webdriver.chrome.driver"] = chromedriver
-		self.driver = webdriver.Chrome(chromedriver)
-		'''
-		#https://bbuseruploads.s3.amazonaws.com/fd96ed93-2b32-46a7-9d2b-ecbc0988516a/downloads/396e7977-71fd-4592-8723-495ca4cfa7cc/phantomjs-2.1.1-linux-x86_64.tar.bz2?Signature=JRuhEe3%2Bn4Hm8QgXoWq0vuuDDYo%3D&Expires=1488867854&AWSAccessKeyId=AKIAIVFPT2YJYYZY3H4A&versionId=null&response-content-disposition=attachment%3B%20filename%3D%22phantomjs-2.1.1-linux-x86_64.tar.bz2%22
-		self.driver = webdriver.PhantomJS()
-		'''
-		self.driver.get(self.topic_link)
 		"""
 		usage format
 		driver.find_elements_by_xpath('//a[starts-with(@class,"more_link")]')
@@ -45,28 +35,20 @@ class topic_qs:
 		driver.find_elements_by_xpath('//*[starts-with(@*,"*") and contains(@*,"*")]')
 		"""
 
-		self.driver.find_elements_by_xpath('//div[contains(text(), "Sign In")]')[0].click()
-		time.sleep(0.8)
-		#time.sleep(10)
-		self.driver.find_elements_by_xpath('//a[contains(text(), "I Have a Quora Account")]')[0].click()
-		time.sleep(0.5)
-		#time.sleep(10)
-
-		#tip! :: if you are using login from Quora home page use regular_login instead of normal_login
-		#signing in through topic page
-		self.login_class=self.driver.find_elements_by_class_name('normal_login')
-
-		self.email=self.login_class[0].find_element_by_name('email')
-		self.email.send_keys(self.user_email)
-
-		self.password=self.login_class[0].find_element_by_name('password')
-		self.password.send_keys(self.user_passw)
-
-		time.sleep(0.5)
-		#time.sleep(10)
-		self.login_class[0].find_elements_by_class_name('submit_button')[0].click()
-		time.sleep(2)
-		#time.sleep(10)
+		# installation tip!
+		# https://chromedriver.storage.googleapis.com/index.html?path=2.27/
+		# download from ^, copy it to /usr/bin/ and give it executable permissions(a+x)
+		chromedriver = "/usr/bin/chromedriver"
+		os.environ["webdriver.chrome.driver"] = chromedriver
+		self.driver = webdriver.Chrome(chromedriver)
+		
+		#PhantomJS
+		#https://bbuseruploads.s3.amazonaws.com/fd96ed93-2b32-46a7-9d2b-ecbc0988516a/downloads/396e7977-71fd-4592-8723-495ca4cfa7cc/phantomjs-2.1.1-linux-x86_64.tar.bz2?Signature=JRuhEe3%2Bn4Hm8QgXoWq0vuuDDYo%3D&Expires=1488867854&AWSAccessKeyId=AKIAIVFPT2YJYYZY3H4A&versionId=null&response-content-disposition=attachment%3B%20filename%3D%22phantomjs-2.1.1-linux-x86_64.tar.bz2%22
+		#self.driver = webdriver.PhantomJS()
+		
+		self.driver.get(self.topic_link)
+		
+		login(self.user_email, self.user_passw, self.driver)
 
 		#setting the filename to be saved
 		if (self.topic_link.endswith('/all_questions') or self.topic_link.endswith('/all_questions/')):
@@ -120,5 +102,5 @@ class topic_qs:
 		self.driver.close()
 
 t = topic_qs()
-t.login_and_scrape("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 50, 10)
+t.scrape_qs("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 500, 10)
 #t.login_and_scrape('url','email','passw',scrolls, save_after_scrolls)
