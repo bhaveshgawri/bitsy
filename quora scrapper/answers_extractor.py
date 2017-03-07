@@ -1,32 +1,25 @@
-import os, time, requests
+import os, time, json, requests, sys
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
-from page_login import login
-
 
 class q_link:
-	def scrape_details(self, question_url, mail, passw, max_ans=4, max_scrolls=250):
+	def scrape_details(self, database, question_url, max_ans=10, max_scrolls=100):
 
 		self.q_url = question_url
-		self.user_email = mail
-		self.user_passw = passw
 		self.max_limit = max_ans
 		self.max_scrolls = max_scrolls
-		#q_url = "https://www.quora.com/How-do-I-study-Inorganic-Chemistry-for-JEE-16-Mains+Advanced-and-BITSAT"
 
 		chromedriver = "/usr/bin/chromedriver"
 		os.environ["webdriver.chrome.driver"] = chromedriver
 		self.driver = webdriver.Chrome(chromedriver)
 		self.driver.get(self.q_url)
 
-		login(self.user_email, self.user_passw, self.driver)
-
 		if self.max_limit <= 5:
-			self.scrolls = 50
+			self.scrolls = 25
 		elif self.max_limit > 5 and self.max_limit < 10:
-			self.scrolls = 80
+			self.scrolls = 45
 		else:
 			self.scrolls = self.max_scrolls
 		
@@ -37,17 +30,52 @@ class q_link:
 		req = requests.get(question_url)
 		self.soup = BeautifulSoup(req.content, "lxml")
 
-		answer_panel = soup.find("div",{
+		self.answer_panel = self.soup.find("div",{
 			"class": "AnswerPagedList"
 			})
 
-		all_answers = answer_panel.find_all("div", {
+		self.all_answers = self.answer_panel.find_all("div", {
 			"class": ["AnswerBase", "Answer"]
 			}, limit=self.max_limit)
 
-		for ans in all_answers:
-			print ans.text
+			
+		answer_set=[]
+		for answer in self.all_answers:
+			ans_box = answer.find_all("div",{
+				"class": ["ExpandedQText", "ExpandedAnswer"]
+				})
+			full_ans = ans_box[0].find("span",{
+				"class": "rendered_qtext"
+				})
+			ans=[]
+			for ans_part in full_ans:
+				if ans_part.name is 'p':
+					ans.append(ans_part.get_text())
+					try:
+						ans_links = ans_part.find_all('a')
+						for ans_link in ans_links:
+							if ans_link.get('href').startswith('/profile/'):
+								ans.append(ans_link.get_text()+" @ https://quora.com"+ans_link.get('href'))
+							else:
+								ans.append(ans_link.get_text()+" @ "+ans_link.get('href'))
+					except:
+						ans.append(ans_part.get_text())
+				elif ans_part.name is 'div':
+					images=ans_part.find_all('img',{
+						"class": ['qtext_image_placeholder', 'landscape', 'qtext_image', 'zoomable_in', 'zoomable_in_feed']
+						})
+					for img in images:
+						ans.append(img.get('src'))
+				
+			#print(ans)
+			answer_set.append(ans)
+		
+		database[self.q_url] = answer_set
+		file = open('data.json','w')
+		json.dump(database, file)
+		file.close
+		return database
 
+database={}
 t = q_link()
-t.scrape_details("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 500, 10)
-#t.login_and_scrape('url','email','passw',scrolls, save_after_scrolls)
+database = t.scrape_details(database, "https://www.quora.com/Why-did-NASA-extend-Hubbles-lifetime-by-another-five-years", 2, 2)
