@@ -3,9 +3,15 @@ import answers_extractor as ae
 
 single_link = "https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions"
 page_links = ["https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions",
+"https://www.quora.com/topic/BITSAT-Preparation/all_questions",
+"https://www.quora.com/topic/Birla-Institute-of-Technology-and-Science-Pilani-1/all_questions",
+"https://www.quora.com/topic/Life-at-BITS-Pilani-Pilani-Campus-1/all_questions",
+"https://www.quora.com/topic/BITS-Pilani-K-K-Birla-Goa-Campus-4/all_questions",
+"https://www.quora.com/topic/Birla-Institute-of-Technology-and-Science-Pilani-Pilani-Campus/all_questions",
+"https://www.quora.com/topic/BITS-Pilani-Hyderabad-Campus/all_questions",
+"https://www.quora.com/topic/BITS-Alumni-Association-1/all_questions",
+"https://www.quora.com/topic/Birla-Institute-of-Technology-Science-Pilani-Dubai-Campus/all_questions"]
 
-
-]
 mail = "thebitsatbot@gmail.com"
 passw = " Use at least 8 characters."
 

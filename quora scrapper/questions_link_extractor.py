@@ -105,6 +105,4 @@ class topic_qs:
 		
 		self.driver.close()
 
-#t = topic_qs()
-#t.scrape_qs("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 500, 10)
-#^ will change the password later on. If you try to login using the credentials above, you will only waste 30s.
+#t = topic_qs("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 500, 10)
