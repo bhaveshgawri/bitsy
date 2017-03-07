@@ -1,4 +1,4 @@
-import os, time, json, requests, sys
+import io, os, time, json, requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -60,22 +60,26 @@ class q_link:
 								ans.append(ans_link.get_text()+" @ "+ans_link.get('href'))
 					except:
 						ans.append(ans_part.get_text())
-				elif ans_part.name is 'div':
+				elif ans_part.name == 'div':
 					images=ans_part.find_all('img',{
 						"class": ['qtext_image_placeholder', 'landscape', 'qtext_image', 'zoomable_in', 'zoomable_in_feed']
 						})
 					for img in images:
 						ans.append(img.get('src'))
 				
-			#print(ans)
 			answer_set.append(ans)
 		
 		database[self.q_url] = answer_set
-		file = open('data.json','w')
-		json.dump(database, file)
-		file.close
+		with io.open('data.json', 'w', encoding='utf8') as json_file:
+			json.dump(database, json_file, ensure_ascii=False)
+
+		#file = open('data.json','w')
+		#json.dump(database, file)
+		#file.close
+		self.driver.close()
 		return database
+
 
 database={}
 t = q_link()
-database = t.scrape_details(database, "https://www.quora.com/Why-did-NASA-extend-Hubbles-lifetime-by-another-five-years", 2, 2)
+database = t.scrape_details(database, "https://www.quora.com/What-10-minute-daily-activity-would-sharpen-my-mind-over-a-year", 2, 2)
