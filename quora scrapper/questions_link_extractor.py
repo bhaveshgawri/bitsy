@@ -5,7 +5,15 @@ from selenium.webdriver.common.keys import Keys
 from page_login import login
 
 class topic_qs:
-	def scrape_qs(self, link, mail, passw, scrolls=100, save_after=10):
+	def __init__(self, link, mail, passw, scrolls, save_after):
+		self.topic_link = link
+		self.user_email = mail
+		self.user_passw = passw
+		self.scrolls = scrolls
+		self.save_after = save_after
+		self.scrape_qs()	
+
+	def scrape_qs(self):
 		"""
 		Arguments:
 			example link: "https://www.quora.com/topic/BITS-Pilani-Hyderabad-Campus/all_questions"
@@ -19,13 +27,6 @@ class topic_qs:
 			gets all the question links;
 			saves them in a file and quits.
 		"""
-
-		self.topic_link = link
-		self.user_email = mail
-		self.user_passw = passw
-		self.scrolls = scrolls
-		self.save_after = save_after
-		
 		"""
 		usage format
 		driver.find_elements_by_xpath('//a[starts-with(@class,"more_link")]')
@@ -63,6 +64,7 @@ class topic_qs:
 		self.counter=0
 		self.questions_extrated=0
 		self.completed_list=[]
+		self.total = self.scrolls
 		try:
 			with open (self.filename,"r") as f:
 				self.completed_list=f.readlines()
@@ -87,20 +89,22 @@ class topic_qs:
 			if self.counter == self.save_after:
 				#getting all the question links	
 				self.question_links = self.driver.find_elements_by_xpath('//a[starts-with(@class,"question_link")]')
-
 				#writing to a file if it is not already there
 				with open (self.filename,"a") as f:
 					for a_link in self.question_links:
 						if a_link.get_attribute('href')+'\n' not in self.completed_list:
-							f.write(a_link.get_attribute('href')+'\n')
-							self.questions_extrated = self.questions_extrated+1
-							self.completed_list.append(a_link.get_attribute('href'))
+							if not a_link.get_attribute('href').startswith("https://www.quora.com/unanswered"):
+								print(a_link.get_attribute('href'))
+								f.write(a_link.get_attribute('href')+'\n')
+								self.questions_extrated = self.questions_extrated+1
+								self.completed_list.append(a_link.get_attribute('href')+'\n')
 					f.close()
 				self.counter = 0
-				print(str(self.questions_extrated)+" unique questions extracted...")
+				self.total -= self.save_after
+				print("[total] "+str(self.questions_extrated)+" unique questions extracted... [scrolls rem.:"+str(self.total)+"]")
 		
 		self.driver.close()
 
-t = topic_qs()
-t.scrape_qs("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 500, 10)
-#t.login_and_scrape('url','email','passw',scrolls, save_after_scrolls)
+#t = topic_qs()
+#t.scrape_qs("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 500, 10)
+#^ will change the password later on. If you try to login using the credentials above, you will only waste 30s.
