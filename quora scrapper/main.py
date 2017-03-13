@@ -1,7 +1,6 @@
 import questions_link_extractor as qle
 import answers_extractor as ae
 
-single_link = "https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions"
 page_links = ["https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions",
 "https://www.quora.com/topic/BITSAT-Preparation/all_questions",
 "https://www.quora.com/topic/Birla-Institute-of-Technology-and-Science-Pilani-1/all_questions",
@@ -11,7 +10,7 @@ page_links = ["https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questi
 "https://www.quora.com/topic/BITS-Pilani-Hyderabad-Campus/all_questions",
 "https://www.quora.com/topic/BITS-Alumni-Association-1/all_questions",
 "https://www.quora.com/topic/Birla-Institute-of-Technology-Science-Pilani-Dubai-Campus/all_questions"]
-
+single_link = page_links[1]
 mail = "thebitsatbot@gmail.com"
 passw = " Use at least 8 characters."
 
@@ -58,5 +57,5 @@ def scrape_answers(topic_link, max_ans=10, max_scrolls=50):
 		print("[remaining] "+str(count)+" questions to be scraped")
 
 #scrape_multiple_topics(page_links, mail, passw, 1000, 10)
-#scrape_single_topic(single_link, mail, passw, 1000, 10)
-#scrape_answers(single_link,  2, 2)
+#scrape_single_topic(single_link, mail, passw, 3500, 10)
+scrape_answers(single_link,  3, 2)

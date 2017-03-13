@@ -1,8 +1,12 @@
 import os, time
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 from page_login import login
+
+class color:
+	RED = '\033[91m'
+	YELLOW = '\033[93m'
+	BOLD = '\033[1m'
+	END = '\033[0m'
 
 class topic_qs:
 	def __init__(self, link, mail, passw, scrolls, save_after):
@@ -37,11 +41,11 @@ class topic_qs:
 		"""
 
 		# installation tip!
+
+		#chromedriver
 		# https://chromedriver.storage.googleapis.com/index.html?path=2.27/
 		# download from ^, copy it to /usr/bin/ and give it executable permissions(a+x)
-		chromedriver = "/usr/bin/chromedriver"
-		os.environ["webdriver.chrome.driver"] = chromedriver
-		self.driver = webdriver.Chrome(chromedriver)
+		self.driver = webdriver.Chrome()
 		
 		#PhantomJS
 		#https://bbuseruploads.s3.amazonaws.com/fd96ed93-2b32-46a7-9d2b-ecbc0988516a/downloads/396e7977-71fd-4592-8723-495ca4cfa7cc/phantomjs-2.1.1-linux-x86_64.tar.bz2?Signature=JRuhEe3%2Bn4Hm8QgXoWq0vuuDDYo%3D&Expires=1488867854&AWSAccessKeyId=AKIAIVFPT2YJYYZY3H4A&versionId=null&response-content-disposition=attachment%3B%20filename%3D%22phantomjs-2.1.1-linux-x86_64.tar.bz2%22
@@ -70,7 +74,6 @@ class topic_qs:
 				self.completed_list=f.readlines()
 		except:
 			self.completed_list=[]
-		
 		for i in range(0,self.scrolls):
 			self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 			
@@ -94,15 +97,16 @@ class topic_qs:
 					for a_link in self.question_links:
 						if a_link.get_attribute('href')+'\n' not in self.completed_list:
 							if not a_link.get_attribute('href').startswith("https://www.quora.com/unanswered"):
-								print(a_link.get_attribute('href'))
+								#print(a_link.get_attribute('href'))
 								f.write(a_link.get_attribute('href')+'\n')
 								self.questions_extrated = self.questions_extrated+1
 								self.completed_list.append(a_link.get_attribute('href')+'\n')
 					f.close()
 				self.counter = 0
 				self.total -= self.save_after
-				print("[total] "+str(self.questions_extrated)+" unique questions extracted... [scrolls rem.:"+str(self.total)+"]")
+				print(color.RED + color.BOLD + "[total] " + color.END + color.YELLOW + str(self.questions_extrated) + color.END + " unique questions extracted in this sesssion [scrolls rem.:" + str(self.total) + "]")
 		
 		self.driver.close()
 
-#t = topic_qs("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 500, 10)
+if __name__ == '__main__':
+	t = topic_qs("https://www.quora.com/topic/BITSAT-BITS-Admission-Test/all_questions","thebitsatbot@gmail.com", " Use at least 8 characters.", 3000, 20)

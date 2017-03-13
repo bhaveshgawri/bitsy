@@ -1,8 +1,6 @@
 import io, os, time, json, requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 
 class q_link:
 	def __init__(self, question_url, filename, max_ans, max_scrolls):
@@ -22,9 +20,8 @@ class q_link:
 		
 		#if question is not present in self.filelist then add the question to filelist
 		if self.q_url not in database:
-			chromedriver = "/usr/bin/chromedriver"
-			os.environ["webdriver.chrome.driver"] = chromedriver
-			self.driver = webdriver.Chrome(chromedriver)
+			self.driver = webdriver.PhantomJS()
+			#self.driver = webdriver.Chrome()
 			self.driver.get(self.q_url)
 
 			if self.max_limit <= 5:
@@ -88,4 +85,5 @@ class q_link:
 
 			self.driver.close()
 
-#t = q_link("https://www.quora.com/What-is-the-minimum-number-to-gain-admission-into-BITSAT-any-campus","file", 2, 2)
+if __name__ == '__main__':
+	t = q_link("https://www.quora.com/What-is-the-minimum-number-to-gain-admission-into-BITSAT-any-campus","file", 3, 2)
