@@ -37,7 +37,14 @@ class q_link:
 				self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 				time.sleep(0.2)
 
-			req = requests.get(self.q_url)
+			req = ""
+			while req=="":
+				try:
+					req = requests.get(self.q_url)
+				except requests.exceptions.ConnectionError:
+					print("Connection refused!\nRetrying...")
+					time.sleep(5)
+
 			self.soup = BeautifulSoup(req.content, "lxml")
 
 			self.answer_panel = self.soup.find("div",{
