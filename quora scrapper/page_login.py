@@ -1,7 +1,5 @@
 import os, time
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 
 def login(email, passw, driver):
 	driver.find_elements_by_xpath('//div[contains(text(), "Sign In")]')[0].click()
