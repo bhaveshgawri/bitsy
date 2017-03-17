@@ -16,8 +16,9 @@ class formatted_dictionarify:
 
 		self.formatify(questions)
 		
+		json_filename = self.filename[:-3]+"json"
 		#JSONify
-		with io.open("../database/formatted_questions/"+self.filename, 'w', encoding='utf8') as json_file:
+		with io.open("../database/formatted_questions/"+json_filename, 'w', encoding='utf8') as json_file:
 			json.dump(self.filtered_questions, json_file, ensure_ascii=False)
 
 	def formatify(self, questions):

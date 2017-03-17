@@ -54,8 +54,8 @@ def scrape_answers(topic_link, max_ans=10, max_scrolls=50):
 		#since '\n' is at the end of every question
 		ae.q_link(question[:-1], filenameJSON, max_ans, max_scrolls)
 		count-=1
-		print("[remaining] "+str(count)+" questions to be scraped")
+		print("[remaining] " + str(count) + " Qs to be scraped")
 
 #scrape_multiple_topics(page_links, mail, passw, 1000, 10)
 #scrape_single_topic(single_link, mail, passw, 3500, 10)
-scrape_answers(single_link,  3, 2)
+scrape_answers(single_link, 3, 2)

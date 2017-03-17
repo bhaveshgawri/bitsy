@@ -18,12 +18,14 @@ class q_link:
 		else:
 			database={}
 		
-		#if question is not present in self.filelist then add the question to filelist
-		if self.q_url not in database:
+		#if question is not present in database then scrape and add the question to database
+		#if self.q_url not in database:
+		if self.q_url not in database or [] in database[self.q_url]:
 			self.driver = webdriver.PhantomJS()
 			#self.driver = webdriver.Chrome()
 			self.driver.get(self.q_url)
 
+			#check for extreme args passed by user 
 			if self.max_limit <= 5:
 				self.scrolls = 12
 			elif self.max_limit > 5 and self.max_limit < 10:
@@ -37,6 +39,7 @@ class q_link:
 				self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 				time.sleep(0.2)
 
+			#check for max retries exceeded exception
 			req = ""
 			while req=="":
 				try:
@@ -91,6 +94,3 @@ class q_link:
 				json.dump(database, json_file, ensure_ascii=False)
 
 			self.driver.close()
-
-if __name__ == '__main__':
-	t = q_link("https://www.quora.com/What-is-the-minimum-number-to-gain-admission-into-BITSAT-any-campus","file", 3, 2)
