@@ -10,3 +10,6 @@ under construction..
 * you may not be able to run the code because of lack the of database but if you can scrape the data and put it in the right format you can easily test it.
 
 P.S. i changed the password :p
+
+#####  Credits
+[GeneralNeuralNetLibrary](https://github.com/BigBang0072/GeneralNeuralNetLibrary): For cut-off Prediction
